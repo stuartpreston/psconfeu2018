@@ -1,0 +1,2 @@
+# This folder should contain any files you wish to transfer to the target node
+# using the `cookbook_file` resource.

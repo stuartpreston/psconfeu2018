@@ -1,0 +1,36 @@
+---
+driver:
+  name: vagrant
+  provider: hyperv
+  forward_agent: yes
+  customize:
+    cpus: 4
+    memory: 4096
+  network:
+  - ["public_network", bridge: "Default Switch"]
+  transport:
+      name: winrm
+
+provisioner:
+  name: chef_zero
+  always_update_cookbooks: true
+  require_omnibus_version: 14
+
+verifier:
+  name: busser
+
+platforms:
+  - name: windows2019beta
+    driver:
+      box: stuartpreston/windows2019beta
+      synced_folders:
+      - ['../..', '/vagrant/code']
+
+suites:
+  - name: demo
+    run_list:
+      - recipe[demo::demo3]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
