@@ -1,0 +1,43 @@
+---
+driver:
+  name: vagrant
+  provider: hyperv
+  forward_agent: yes
+  customize:
+    cpus: 1
+    memory: 1024
+  network:
+  - ["public_network", bridge: "Default Switch"]
+  transport:
+      name: ssh
+
+provisioner:
+  name: chef_zero
+  always_update_cookbooks: true
+  require_omnibus_version: 14
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu
+    driver:
+      box: bento/ubuntu-16.04
+  - name: centos74
+    driver:
+      box: bento/centos-7.4
+  # - name: windows2019
+  #   transport:
+  #     name: winrm
+  #   driver:
+  #     box: stuartpreston/windows2019beta
+  #     communicator: winrm
+
+suites:
+  - name: demo
+    run_list:
+      - recipe[pwsh::pwsh]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
